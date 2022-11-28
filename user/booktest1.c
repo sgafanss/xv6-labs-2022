@@ -2,34 +2,23 @@
 
 #include "kernel/types.h"
 #include "user/user.h"
-
+#include "kernel/fcntl.h"
 // pipe2.c: communication between two processes
 
 int
-main()
+main(int argc ,char *argv[])
 {
-  int n, pid;
-  int fds[2];
-  char buf[100];
-  
-  // create a pipe, with two FDs in fds[0], fds[1].
- 
+  char a[50];
+ // for(int i=0;i<5;i++)
+//  {
+//	  a[i]="0";
+ // }
 
-  pipe(fds);
-  pid = fork();
-  
-  if (pid == 0) {
-    write(fds[1], "this is pipe2\n", 14);
+  strcpy(a,"abcd");
+  a[4]='1';
+  printf("%s,%d,%d",a,a[4],a[6]);
 
-  } else {
-	 wait((int *)0);
-    n = read(fds[0], buf, 14);
-    write(1, buf, n);
-    int a=8;int b=35;
-    printf("%d / %d = %d\n",b,a,b/a);
-  }
-
-  exit(0);
+  return 0;
 }
 
 
