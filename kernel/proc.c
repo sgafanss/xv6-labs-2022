@@ -26,6 +26,20 @@ extern char trampoline[]; // trampoline.S
 // must be acquired before any p->lock.
 struct spinlock wait_lock;
 
+uint64 pro_unused_count()
+{
+      int count2=0;
+      struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state != UNUSED) {
+      count2=count2+1;
+    } 
+    
+      release(&p->lock);
+  }
+  return count2;
+}
 // Allocate a page for each process's kernel stack.
 // Map it high in memory, followed by an invalid
 // guard page.
@@ -295,13 +309,15 @@ fork(void)
     return -1;
   }
   np->sz = p->sz;
-
+  
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
 
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
 
+  //copy tracemask
+  np->tracemask = p->tracemask;
   // increment reference counts on open file descriptors.
   for(i = 0; i < NOFILE; i++)
     if(p->ofile[i])

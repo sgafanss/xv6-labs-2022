@@ -1,0 +1,8 @@
+usertrap()
+0x7
+sstatus: 0x22  , SPP=0, user mode.
+80001ff4:	00002683	lw a3,0(zero) # 0 <_entry-0x80000000>, answer is a3.
+scause 0x000000000000000d means 'Load page fault'
+process name: "initcode\000\000\000\000\000\000\000"
+process ID: 1
+ 

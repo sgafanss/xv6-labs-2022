@@ -5,6 +5,31 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
+
+uint64
+sys_sysinfo(void)
+{
+  uint64 p_info;
+  argaddr(0,&p_info);
+
+  struct proc *p = myproc();
+  struct sysinfo tem;
+
+  tem.freemem=mem_free_count();
+  tem.nproc=pro_unused_count();
+  if(copyout(p->pagetable,p_info,(char *)(&tem),sizeof(tem))<0)
+    return -1;
+  return 0;
+}
+
+uint64
+sys_trace(void)
+{
+  int n;
+  argint(0,&n);
+  return n;
+}
 
 uint64
 sys_exit(void)

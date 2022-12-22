@@ -8,7 +8,8 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
-
+ uint64 mem_free_count(void);
+ uint64 pro_unused_count(void);
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);
