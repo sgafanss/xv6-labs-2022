@@ -1,6 +1,9 @@
 {
     "workbench.editor.enablePreview": false,
     "files.associations": {
-        "defs.h": "c"
+        "defs.h": "c",
+        "typeinfo": "c",
+        "cmath": "c",
+        "*.tcc": "c"
     }
 }
