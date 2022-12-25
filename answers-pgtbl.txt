@@ -1,0 +1,11 @@
+Which other xv6 system calls could be made faster using this shared page? 
+Explain how.
+
+syscall about fd may map to specailzed va of user process?
+
+Explain the output of vmprint in terms of Fig 3-4 from the text. What does page 0 contain? What is in page 2? When running in user mode, could the process read/write the memory mapped by page 1? What does the third to last page contain?
+
+1)page 0 contain text segment(r--)
+2)page 1 contain data segment(r-x), allow reading and executing.
+3)page 2 contain guard page.
+4)page 3-last are stack\heap\trapframe\trampoline

@@ -75,7 +75,70 @@ int
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
-  return 0;
+  uint64 p1,p2;
+  int n; 
+  argint(1, &n);//LEN
+  if (n>63)
+  return -1;//upbound for len.
+  if (myproc()->pgaccess_flag==0)
+  {
+    myproc()->pgaccess_flag=1;
+    argaddr(0,&p1);//UVA
+    argaddr(2, &p2);//UVA
+    pagetable_t pagetable = myproc()->pagetable;
+    pagetable_t pagetable1;
+    for (int i = 0; i < n; i++)
+    {
+      uint64 va = PGROUNDDOWN(p1+i*PGSIZE);
+        if(va >= MAXVA)
+        panic("pgaccess fail");
+        pte_t *pte=&pagetable[PX(2,va)];
+        if(*pte & PTE_V){
+        pagetable1=(pagetable_t)PTE2PA(*pte);pte=&pagetable1[PX(1,va)];
+        }else{
+        panic("pgaccess fail");}       
+        if (*pte & PTE_V){
+        pagetable1=(pagetable_t)PTE2PA(*pte);pte=&pagetable1[PX(0,va)];
+        }else{
+        panic("pgaccess fail");}
+        if((*pte&PTE_V)&&(*pte&PTE_A))
+        {*pte &= ~PTE_A;}
+    }
+    return 0;
+  }else if (myproc()->pgaccess_flag==1)
+  {
+    uint64 temp=0;
+    argaddr(0,&p1);//UVA
+    
+    argaddr(2, &p2);//UVA
+    pagetable_t pagetable = myproc()->pagetable;
+    pagetable_t pagetable1;
+    for (int i = 0; i < n; i++)
+    {
+      uint64 va = PGROUNDDOWN(p1+i*PGSIZE);
+        if(va >= MAXVA)
+        panic("pgaccess fail");
+        pte_t *pte=&pagetable[PX(2,va)];
+        if(*pte & PTE_V){
+        pagetable1=(pagetable_t)PTE2PA(*pte);pte=&pagetable1[PX(1,va)];
+        }else{
+        panic("pgaccess fail");}       
+        if (*pte & PTE_V){
+        pagetable1=(pagetable_t)PTE2PA(*pte);pte=&pagetable1[PX(0,va)];
+        }else{
+        panic("pgaccess fail");}
+        if((*pte&PTE_V)&&(*pte&PTE_A))
+        {temp=temp|(1<<(i));*pte &= ~PTE_A;}
+    }
+    if(copyout(pagetable, p2, (char *)&temp, sizeof(temp)) < 0)
+    return -1;
+
+    return 0;
+  }
+  else{
+    panic("pgaccess fail");
+  }
+  return 0; //never down here
 }
 #endif
 
