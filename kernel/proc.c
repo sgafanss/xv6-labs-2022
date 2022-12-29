@@ -124,7 +124,11 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
-
+  //alarm
+  p->alarm_count=0;
+  p->alarm_handlerPointers=0;
+  p->alarm_ticks=0;
+  memset(&p->alarm_savingREGs,0,sizeof(p->alarm_savingREGs));
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
     freeproc(p);

@@ -7,6 +7,25 @@
 #include "proc.h"
 
 uint64
+sys_sigalarm(void)
+{
+  int n; uint64 p;
+  argint(0,&n);argaddr(1,&p);
+  myproc()->alarm_ticks=n;
+  myproc()->alarm_handlerPointers=(void *)p;
+  return 0;
+}
+
+
+uint64
+sys_sigreturn(void)
+{
+  myproc()->alarm_count=0;
+  memmove((void *)(myproc()->trapframe),(const void *)(&(myproc()->alarm_savingREGs)),sizeof(myproc()->alarm_savingREGs));
+  return myproc()->trapframe->a0;
+}
+
+uint64
 sys_exit(void)
 {
   int n;
@@ -67,6 +86,7 @@ sys_sleep(void)
     sleep(&ticks, &tickslock);
   }
   release(&tickslock);
+  backtrace();
   return 0;
 }
 
