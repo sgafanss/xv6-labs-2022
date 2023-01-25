@@ -1,0 +1,1 @@
+'A' may decide to write before insert() finish, then 'B' may observe same index position and overwrite that index list in the table.
